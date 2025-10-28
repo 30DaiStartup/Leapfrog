@@ -55,10 +55,10 @@ export const SEGMENT_DISTRIBUTION: Record<AdoptionSegment, number> = {
 
 /**
  * Bubble positions in 3D space
- * P1 on right, P2 on left, P0 bottom-right
+ * P1 on right, P2 on left, P0 bottom-right (lower to avoid overlap)
  */
 export const BUBBLE_POSITIONS = {
-  [PlaneType.P0]: [4, -3, 0] as [number, number, number],
+  [PlaneType.P0]: [4, -5, 0] as [number, number, number],
   [PlaneType.P1]: [5, 0, 0] as [number, number, number],
   [PlaneType.P2]: [-5, 0, 0] as [number, number, number],
 } as const
