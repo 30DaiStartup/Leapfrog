@@ -2,9 +2,10 @@
 
 import { useRef } from 'react'
 import { Mesh } from 'three'
+import { Html } from '@react-three/drei'
 import { useVisualizationStore } from '@/store/useVisualizationStore'
-import { BUBBLE_POSITIONS, BUBBLE_SIZES, COLORS } from '@/lib/constants'
-import { PlaneType } from '@/types'
+import { BUBBLE_POSITIONS, BUBBLE_SIZES, COLORS, SEGMENT_COLORS } from '@/lib/constants'
+import { PlaneType, AdoptionSegment } from '@/types'
 
 /**
  * Single Bubble component (P0, P1, or P2)
@@ -26,51 +27,8 @@ function Bubble({
 
   return (
     <group position={position}>
-      {/* Bubble sphere */}
+      {/* Bubble sphere - clean, no wireframe */}
       <mesh ref={meshRef}>
-        <sphereGeometry args={[radius, 32, 32]} />
-        <meshStandardMaterial
-          color={color}
-          transparent
-          opacity={0.3}
-          wireframe={false}
-        />
-      </mesh>
-
-      {/* Bubble wireframe outline */}
-      <mesh>
-        <sphereGeometry args={[radius, 32, 32]} />
-        <meshBasicMaterial color={color} wireframe opacity={0.5} transparent />
-      </mesh>
-
-      {/* Label (we'll add HTML overlay later for proper text) */}
-    </group>
-  )
-}
-
-/**
- * P1 Bubble with 5 segment bands
- */
-function P1BubbleWithBands() {
-  const scenario = useVisualizationStore((state) => state.scenario)
-  const position = BUBBLE_POSITIONS[PlaneType.P1]
-  const radius = BUBBLE_SIZES[PlaneType.P1]
-  const color = COLORS.p1.primary
-
-  // Band heights (5 bands stacked vertically)
-  const bandHeight = (radius * 2) / 5
-  const bands = [
-    { segment: 'Laggards', yOffset: radius - bandHeight / 2, opacity: 0.2 },
-    { segment: 'Late Majority', yOffset: radius - (bandHeight * 3) / 2, opacity: 0.3 },
-    { segment: 'Early Majority', yOffset: radius - (bandHeight * 5) / 2, opacity: 0.4 },
-    { segment: 'Early Adopters', yOffset: -radius + (bandHeight * 3) / 2, opacity: 0.5 },
-    { segment: 'Innovators', yOffset: -radius + bandHeight / 2, opacity: 0.6 },
-  ]
-
-  return (
-    <group position={position}>
-      {/* Main bubble sphere */}
-      <mesh>
         <sphereGeometry args={[radius, 32, 32]} />
         <meshStandardMaterial
           color={color}
@@ -79,22 +37,98 @@ function P1BubbleWithBands() {
           wireframe={false}
         />
       </mesh>
+    </group>
+  )
+}
 
-      {/* Wireframe outline */}
+/**
+ * P1 Bubble with 5 segment bands
+ * Innovators at top, Laggards at bottom
+ */
+function P1BubbleWithBands() {
+  const scenario = useVisualizationStore((state) => state.scenario)
+  const position = BUBBLE_POSITIONS[PlaneType.P1]
+  const radius = BUBBLE_SIZES[PlaneType.P1]
+  const color = COLORS.p1.primary
+
+  // Band heights (5 bands stacked vertically)
+  // FLIPPED: Innovators at top, Laggards at bottom
+  const bandHeight = (radius * 2) / 5
+  const bands = [
+    {
+      segment: AdoptionSegment.Innovators,
+      label: 'Innovators',
+      yOffset: radius - bandHeight / 2,
+      color: SEGMENT_COLORS[AdoptionSegment.Innovators]
+    },
+    {
+      segment: AdoptionSegment.EarlyAdopters,
+      label: 'Early Adopters',
+      yOffset: radius - (bandHeight * 3) / 2,
+      color: SEGMENT_COLORS[AdoptionSegment.EarlyAdopters]
+    },
+    {
+      segment: AdoptionSegment.EarlyMajority,
+      label: 'Early Majority',
+      yOffset: 0,
+      color: SEGMENT_COLORS[AdoptionSegment.EarlyMajority]
+    },
+    {
+      segment: AdoptionSegment.LateMajority,
+      label: 'Late Majority',
+      yOffset: -radius + (bandHeight * 3) / 2,
+      color: SEGMENT_COLORS[AdoptionSegment.LateMajority]
+    },
+    {
+      segment: AdoptionSegment.Laggards,
+      label: 'Laggards',
+      yOffset: -radius + bandHeight / 2,
+      color: SEGMENT_COLORS[AdoptionSegment.Laggards]
+    },
+  ]
+
+  return (
+    <group position={position}>
+      {/* Main bubble sphere - clean, no wireframe */}
       <mesh>
         <sphereGeometry args={[radius, 32, 32]} />
-        <meshBasicMaterial color={color} wireframe opacity={0.4} transparent />
+        <meshStandardMaterial
+          color={color}
+          transparent
+          opacity={0.15}
+          wireframe={false}
+        />
       </mesh>
 
-      {/* Segment bands (horizontal lines) */}
-      {bands.map((band, index) => (
-        <group key={index} position={[0, band.yOffset, 0]}>
-          {/* Band divider line */}
+      {/* Subtle band divider lines */}
+      {bands.slice(0, -1).map((band, index) => (
+        <group key={index} position={[0, band.yOffset - bandHeight / 2, 0]}>
+          {/* Thin horizontal divider line */}
           <mesh rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.02, 0.02, radius * 2, 16]} />
-            <meshBasicMaterial color={color} opacity={band.opacity} transparent />
+            <cylinderGeometry args={[0.01, 0.01, radius * 2.2, 16]} />
+            <meshBasicMaterial color={color} opacity={0.3} transparent />
           </mesh>
         </group>
+      ))}
+
+      {/* Labels on the right side */}
+      {bands.map((band, index) => (
+        <Html
+          key={`label-${index}`}
+          position={[radius + 0.5, band.yOffset, 0]}
+          center
+          style={{
+            color: '#ffffff',
+            fontSize: '12px',
+            fontWeight: '500',
+            userSelect: 'none',
+            pointerEvents: 'none',
+            textAlign: 'left',
+            whiteSpace: 'nowrap',
+          }}
+        >
+          {band.label}
+        </Html>
       ))}
     </group>
   )
