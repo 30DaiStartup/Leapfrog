@@ -89,24 +89,45 @@ function P1BubbleWithBands() {
 
   return (
     <group position={position}>
-      {/* Main bubble sphere - clean, no wireframe */}
+      {/* Main bubble sphere - very subtle base */}
       <mesh>
         <sphereGeometry args={[radius, 32, 32]} />
         <meshStandardMaterial
           color={color}
           transparent
-          opacity={0.15}
+          opacity={0.08}
           wireframe={false}
         />
       </mesh>
 
-      {/* Subtle band divider lines */}
+      {/* Colored band segments - each band has a slightly different tint */}
+      {bands.map((band, index) => {
+        const nextBand = bands[index + 1]
+        const yStart = band.yOffset - bandHeight / 2
+        const yEnd = nextBand ? nextBand.yOffset + bandHeight / 2 : band.yOffset + bandHeight / 2
+        const bandCenterY = (yStart + yEnd) / 2
+        const segmentHeight = Math.abs(yEnd - yStart)
+
+        return (
+          <mesh key={`segment-${index}`} position={[0, bandCenterY, 0]}>
+            <cylinderGeometry args={[radius * 0.95, radius * 0.95, segmentHeight, 32]} />
+            <meshStandardMaterial
+              color={band.color}
+              transparent
+              opacity={0.12}
+              wireframe={false}
+            />
+          </mesh>
+        )
+      })}
+
+      {/* Divider lines extending all the way through */}
       {bands.slice(0, -1).map((band, index) => (
         <group key={index} position={[0, band.yOffset - bandHeight / 2, 0]}>
-          {/* Thin horizontal divider line */}
+          {/* Horizontal divider line - extends beyond sphere */}
           <mesh rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.01, 0.01, radius * 2.2, 16]} />
-            <meshBasicMaterial color={color} opacity={0.3} transparent />
+            <cylinderGeometry args={[0.015, 0.015, radius * 2.4, 16]} />
+            <meshBasicMaterial color={color} opacity={0.4} transparent />
           </mesh>
         </group>
       ))}
