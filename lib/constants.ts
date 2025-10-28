@@ -21,7 +21,7 @@ export const COLORS = {
     primary: '#4A90E2',
     secondary: '#0077B6',
   },
-  string: 'rgba(255, 255, 255, 0.3)',
+  string: '#ffffff',
   text: {
     primary: '#FFFFFF',
     secondary: '#CCCCCC',
@@ -55,10 +55,10 @@ export const SEGMENT_DISTRIBUTION: Record<AdoptionSegment, number> = {
 
 /**
  * Bubble positions in 3D space
- * P1 on right, P2 on left, P0 bottom-right
+ * P1 on right, P2 on left, P0 bottom-right (lower to avoid overlap)
  */
 export const BUBBLE_POSITIONS = {
-  [PlaneType.P0]: [4, -3, 0] as [number, number, number],
+  [PlaneType.P0]: [4, -5, 0] as [number, number, number],
   [PlaneType.P1]: [5, 0, 0] as [number, number, number],
   [PlaneType.P2]: [-5, 0, 0] as [number, number, number],
 } as const
