@@ -12,8 +12,8 @@ export function Scene() {
     <div className="w-full h-full">
       <Canvas
         camera={{
-          position: [0, 0, 15],
-          fov: 50,
+          position: [0, 0, 12],
+          fov: 60,
           near: 0.1,
           far: 1000,
         }}
