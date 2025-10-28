@@ -21,7 +21,7 @@ export const COLORS = {
     primary: '#4A90E2',
     secondary: '#0077B6',
   },
-  string: 'rgba(255, 255, 255, 0.3)',
+  string: '#ffffff',
   text: {
     primary: '#FFFFFF',
     secondary: '#CCCCCC',
