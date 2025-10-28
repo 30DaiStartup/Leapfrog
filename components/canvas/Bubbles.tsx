@@ -89,50 +89,29 @@ function P1BubbleWithBands() {
 
   return (
     <group position={position}>
-      {/* Main bubble sphere - very subtle base */}
+      {/* Main bubble sphere - clean and simple */}
       <mesh>
         <sphereGeometry args={[radius, 32, 32]} />
         <meshStandardMaterial
           color={color}
           transparent
-          opacity={0.08}
+          opacity={0.18}
           wireframe={false}
         />
       </mesh>
 
-      {/* Colored band segments - each band has a slightly different tint */}
-      {bands.map((band, index) => {
-        const nextBand = bands[index + 1]
-        const yStart = band.yOffset - bandHeight / 2
-        const yEnd = nextBand ? nextBand.yOffset + bandHeight / 2 : band.yOffset + bandHeight / 2
-        const bandCenterY = (yStart + yEnd) / 2
-        const segmentHeight = Math.abs(yEnd - yStart)
-
-        return (
-          <mesh key={`segment-${index}`} position={[0, bandCenterY, 0]}>
-            <cylinderGeometry args={[radius * 0.95, radius * 0.95, segmentHeight, 32]} />
-            <meshStandardMaterial
-              color={band.color}
-              transparent
-              opacity={0.12}
-              wireframe={false}
-            />
-          </mesh>
-        )
-      })}
-
-      {/* Divider lines extending all the way through */}
+      {/* Horizontal divider lines - extend all the way through bubble */}
       {bands.slice(0, -1).map((band, index) => (
-        <group key={index} position={[0, band.yOffset - bandHeight / 2, 0]}>
-          {/* Horizontal divider line - extends beyond sphere */}
+        <group key={`divider-${index}`} position={[0, band.yOffset - bandHeight / 2, 0]}>
+          {/* Thin horizontal line */}
           <mesh rotation={[0, 0, Math.PI / 2]}>
-            <cylinderGeometry args={[0.015, 0.015, radius * 2.4, 16]} />
-            <meshBasicMaterial color={color} opacity={0.4} transparent />
+            <cylinderGeometry args={[0.012, 0.012, radius * 2.3, 16]} />
+            <meshBasicMaterial color="#FFB366" opacity={0.6} transparent />
           </mesh>
         </group>
       ))}
 
-      {/* Labels on the right side */}
+      {/* Labels on the right side with background color indicators */}
       {bands.map((band, index) => (
         <Html
           key={`label-${index}`}
@@ -146,6 +125,9 @@ function P1BubbleWithBands() {
             pointerEvents: 'none',
             textAlign: 'left',
             whiteSpace: 'nowrap',
+            padding: '2px 6px',
+            backgroundColor: `${band.color}33`,
+            borderRadius: '3px',
           }}
         >
           {band.label}
