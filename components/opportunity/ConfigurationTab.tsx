@@ -11,6 +11,11 @@ interface ConfigurationTabProps {
 export default function ConfigurationTab({ opportunity }: ConfigurationTabProps) {
   const { updateOpportunity } = useOpportunityStore();
 
+  // Format date consistently for SSR/client hydration
+  const formatDate = (date: Date) => {
+    return new Date(date).toISOString().replace('T', ' ').split('.')[0];
+  };
+
   const [formData, setFormData] = useState({
     name: opportunity.name,
     description: opportunity.description,
@@ -688,8 +693,8 @@ export default function ConfigurationTab({ opportunity }: ConfigurationTabProps)
         {/* Metadata Footer */}
         <div className="mt-8 pt-6 border-t border-gray-700">
           <div className="text-sm text-gray-500 space-y-1">
-            <p>Created: {new Date(opportunity.createdAt).toLocaleString()}</p>
-            <p>Last Updated: {new Date(opportunity.updatedAt).toLocaleString()}</p>
+            <p>Created: {formatDate(opportunity.createdAt)}</p>
+            <p>Last Updated: {formatDate(opportunity.updatedAt)}</p>
             <p className="text-gray-600 mt-2 italic">
               Note: Market configuration enables comprehensive TAM, SAM, SOM analysis, CAGR calculations,
               and customer metric tracking. Additional adoption segment and product milestone configuration
