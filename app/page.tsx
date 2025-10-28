@@ -3,6 +3,8 @@
 import { useEffect } from 'react'
 import { useVisualizationStore } from '@/store/useVisualizationStore'
 import { hardcodedScenario } from '@/lib/data/hardcodedScenario'
+import { Scene } from '@/components/canvas/Scene'
+import { Controls } from '@/components/ui/Controls'
 
 export default function Home() {
   const setScenario = useVisualizationStore((state) => state.setScenario)
@@ -36,40 +38,14 @@ export default function Home() {
 
       {/* Canvas Container - This is where the 3D visualization will go */}
       <section className="flex-1 w-full flex items-center justify-center px-6">
-        <div className="w-full h-full max-w-7xl max-h-[70vh] bg-background-dark rounded-lg border border-gray-800 flex items-center justify-center">
-          <p className="text-text-secondary">
-            Canvas visualization will be rendered here
-          </p>
+        <div className="w-full h-full max-w-7xl max-h-[70vh] bg-background-dark rounded-lg border border-gray-800">
+          <Scene />
         </div>
       </section>
 
       {/* Controls */}
-      <section className="w-full max-w-3xl mx-auto px-6 py-8 flex flex-col items-center gap-4">
-        {/* Play/Pause Button - Placeholder */}
-        <button className="px-8 py-3 bg-p2 hover:bg-p2-light text-white rounded-lg font-medium transition-colors">
-          Play
-        </button>
-
-        {/* Speed Control - Placeholder */}
-        <div className="flex items-center gap-4">
-          <span className="text-sm text-text-secondary">Speed:</span>
-          <div className="flex gap-2">
-            <button className="px-3 py-1 text-sm border border-gray-700 rounded hover:border-gray-500 transition-colors">
-              0.5x
-            </button>
-            <button className="px-3 py-1 text-sm border border-gray-700 rounded hover:border-gray-500 transition-colors bg-gray-800">
-              1x
-            </button>
-            <button className="px-3 py-1 text-sm border border-gray-700 rounded hover:border-gray-500 transition-colors">
-              2x
-            </button>
-          </div>
-        </div>
-
-        {/* Export Button - Placeholder */}
-        <button className="px-6 py-2 border border-gray-700 text-text-secondary hover:border-gray-500 hover:text-text-primary rounded-lg transition-colors">
-          Export PNG
-        </button>
+      <section className="w-full max-w-3xl mx-auto px-6 py-8">
+        <Controls />
       </section>
 
       {/* Footer */}
