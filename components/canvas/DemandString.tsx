@@ -49,7 +49,7 @@ export function DemandString() {
 
       {/* Optional: Add a glowing effect */}
       <mesh geometry={tubeGeometry}>
-        <meshBasicMaterial
+        <meshStandardMaterial
           color={COLORS.accent}
           transparent
           opacity={0.1}
